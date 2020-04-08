@@ -23,9 +23,9 @@ export const getCsrfToken = () => getCookie("csrftoken");
 export const axiosInstance = axios.create({
   baseURL,
   headers: {
-    "content-type": "application/json"
+    "content-type": "multipart/form-data;boundary=----WebKitFormBoundaryyrV7KO0BoCBuDbTL"
   },
-  withCredentials: true
+  withCredentials: false
 });
 
 export const makeGetRequest = (endpoint, params = {}, headers) => {
@@ -46,13 +46,16 @@ export const makeGetRequest = (endpoint, params = {}, headers) => {
 
 export const makePostRequest = (
   endpoint,
-  params = {},
+  params ,
   headers,
   onUploadProgress
 ) => {
+
+  // const form = new FormData();
+  // form.append('file',params);
   const options = {
     method: "POST",
-    headers: { ...headers },
+    headers: {"Content-Type": 'multipart/form-data',"Access-Control-Allow-Origin": "*" },
     data: params,
     url: endpoint,
     onUploadProgress

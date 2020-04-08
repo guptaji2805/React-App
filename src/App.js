@@ -73,45 +73,11 @@ const Container = styled.div`
     padding: 8px;
     height: 355px;
     overflow: auto;
-    width: 100%;
-  }
-
-  .document-title {
-    color: rgb(43, 45, 60, 0.8);
-    font-size: 16px;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 8px;
-  }
-
-  .empty-state {
-    text-align: center;
-    font-size: 20px;
-  }
-
-  .documents-wrapper {
-    display: flex;
-    flex-wrap: wrap;
   }
 
   .uploaded-file-card {
-    flex: 1 0 33%;
-    flex-flow: column;
-    max-width: 30%;
-    border-radius: 4px;
-    border: 1px solid rgb(112, 112, 112, 0.4);
-    padding: 4px;
-    margin: 8px;
-  }
-
-  .uploaded-file-error-card {
-    flex: 1 0 33%;
-    flex-flow: column;
-    max-width: 30%;
-    border-radius: 4px;
-    border: 1px solid rgb(112, 112, 112, 0.4);
-    padding: 4px;
-    margin: 8px;
+    display: flex;
+    align-items: center;
   }
 
   .failure-icon {
@@ -131,11 +97,13 @@ const Container = styled.div`
   .file-name {
     font-size: 12px;
     color: rgb(43, 45, 60, 0.6);
+    padding-left: 8px;
   }
 
   .error-msg {
     font-size: 12px;
     color: red;
+    padding-left: 8px;
   }
 
   .blank-header {
@@ -224,6 +192,10 @@ const Header = styled.div`
   background-repeat: no-repeat;
   background-size: 100% 200%;
   color: white;
+  /* height: 175px; */
+  /* line-height: 175px; */
+  /* text-align: center; */
+  /* font-size: 44px; */
   display: flex;
   padding: 40px;
 
@@ -319,41 +291,39 @@ const documentAnalysis = [
 const files = [
   {
     id: 1,
-    document: {
-      name: "draft.doc"
-    }
+    document: "draft.doc"
   },
   {
     id: 2,
-    document: { name: "sample-draft.doc" }
+    document: "sample-draft.doc"
   },
   {
     id: 3,
-    document: { name: "draft-for lease agreement in delhi.doc" }
+    document: "draft-for lease agreement in delhi.doc"
   },
   {
     id: 4,
-    document: { name: "land assignment.doc" }
+    document: "land assignment.doc"
   },
   {
     id: 5,
-    document: { name: "Rera settlement.doc" }
+    document: "Rera settlement.doc"
   },
   {
     id: 6,
-    document: { name: "MOV.doc" }
+    document: "MOV.doc"
   },
   {
     id: 7,
-    document: { name: "rent agreement.doc" }
+    document: "rent agreement.doc"
   },
   {
     id: 8,
-    document: { name: "funding for LIC.doc" }
+    document: "funding for LIC.doc"
   },
   {
     id: 9,
-    document: { name: "patanjali-export-import.doc" }
+    document: "patanjali-export-import.doc"
   }
 ];
 
@@ -363,8 +333,8 @@ class AnalysisPage extends React.Component {
 
     this.fileInputRef = React.createRef();
     this.initialState = {
-      documentList: [],
       file: {},
+      errorMsg: "",
       disableAnalysisCTA: true,
       showModal: false,
       step: 1
@@ -375,7 +345,15 @@ class AnalysisPage extends React.Component {
     };
   }
 
-  
+  componentDidMount() {
+    // getDocumentList()
+    //   .then(response => {
+    //     console.log(response);
+    //   })
+    //   .catch(err => {
+    //     console.log(err);
+    //   });
+  }
 
   moveToNextStep = () => {
     const { step } = this.state;
@@ -392,12 +370,11 @@ class AnalysisPage extends React.Component {
   };
 
   onFilesAdded = e => {
-    const { documentList } = this.state;
-
     const file = e.target.files[0];
 
     if (file) {
       const fileName = file.name;
+      let errorMsg = "";
 
       if (fileName) {
         const arr = fileName.split(".");
@@ -408,17 +385,17 @@ class AnalysisPage extends React.Component {
         );
 
         if (!!isSupportedExtention) {
-          let updatedList = documentList;
-          updatedList.push({ document: file });
-
+          errorMsg = "";
           this.setState({
-            documentList: updatedList,
             file: file,
-            disableAnalysisCTA: false
+            disableAnalysisCTA: false,
+            errorMsg: errorMsg
           });
         } else {
+          errorMsg = "Only doc files allowed";
           this.setState({
-            disableAnalysisCTA: true
+            disableAnalysisCTA: true,
+            errorMsg: errorMsg
           });
         }
       }
@@ -426,25 +403,41 @@ class AnalysisPage extends React.Component {
   };
 
   submitFormData = () => {
-    const { inputValue, file } = this.state;
+    const {file } = this.state;
  
-    let formData = {};
-    formData = { file: file };
+    // let formData = {};
+    // formData = { file: file };
  
-    console.log(this.state, "form data", formData);
+   // console.log(this.state, "form data", formData);
  
     let payload = { document : file }
- 
-    addNewDocument(payload)
+     
+     console.log(payload);
+
+    addNewDocument(payload.document)
       .then(response => {
-        console.log(response);
+        console.log("",response);
         this.setState({ showModal: true });
       })
       .catch(err => {
         console.log(err);
       });
+      
     //API call to submit form data 
   };
+
+  // submitFormData = () => {
+  //   const { inputValue, file } = this.state;
+
+  //   let formData = {};
+  //   formData = { doc_file: file, description: inputValue };
+
+  //   console.log(this.state, "form data", formData);
+
+  //   this.setState({ showModal: true });
+
+  //   //API call to submit form data
+  // };
 
   closeModal = () => this.setState({ showModal: false });
 
@@ -480,8 +473,8 @@ class AnalysisPage extends React.Component {
   }
 
   renderStepOneAnalysis() {
-    const { documentList, disableAnalysisCTA } = this.state;
-    console.log(documentList, "render", this.state);
+    const { file, disableAnalysisCTA, errorMsg } = this.state;
+    console.log(file.name, "render", this.state);
 
     return (
       <Container>
@@ -494,7 +487,6 @@ class AnalysisPage extends React.Component {
             </span>
           </span>
         </Header>
-
         <div className="wrapper">
           <div>
             <div className="actions-wrapper">
@@ -505,7 +497,6 @@ class AnalysisPage extends React.Component {
                   ref={this.fileInputRef}
                   onChange={this.onFilesAdded}
                   accept="application/.doc,.docx"
-                  // multiple
                 />
                 Upload
               </button>
@@ -522,39 +513,21 @@ class AnalysisPage extends React.Component {
             </div>
 
             <div className="file-container">
-              <div className="document-title">Document List</div>
-              {documentList.length ? (
-                <div className="documents-wrapper">
-                  {documentList.map(doc => {
-                    const { document } = doc;
-                    const fileName = document.name;
-                    const arr = fileName.split(".");
-                    const docType = arr[arr.length - 1];
-                    const isSupportedExtention = allowedExtensions.find(
-                      ext => ext === docType
-                    );
-
-                    if (!!isSupportedExtention) {
-                      return (
-                        <div className="uploaded-file-card">
-                          <div className="file-name">{document.name}</div>
-                        </div>
-                      );
-                    } else {
-                      return (
-                        <div className="uploaded-file-error-card">
-                          <div className="error-msg">
-                            Only doc files allowed.
-                          </div>
-                          <div className="file-name">({document.name})</div>
-                        </div>
-                      );
-                    }
-                  })}
-                </div>
-              ) : (
-                <div className="empty-state">No files uploaded</div>
-              )}
+              <div className="uploaded-file-card">
+                {errorMsg ? (
+                  <React.Fragment>
+                    <div className="failure-icon" />
+                    <div className="error-msg">{errorMsg}</div>
+                  </React.Fragment>
+                ) : file.name ? (
+                  <React.Fragment>
+                    <div className="success-icon" />
+                    <div className="file-name">{file.name}</div>
+                  </React.Fragment>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
           </div>
 
@@ -592,11 +565,10 @@ class AnalysisPage extends React.Component {
   }
 
   renderStepTwoStartOver() {
-    const { documentList } = this.state;
     return (
       <StartOver
         moveToPreviousStep={this.moveToPreviousStep}
-        files={documentList}
+        files={files}
         documentAnalysis={documentAnalysis}
       />
     );
@@ -611,4 +583,3 @@ class AnalysisPage extends React.Component {
 }
 
 export default AnalysisPage;
-
