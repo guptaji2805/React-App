@@ -330,6 +330,10 @@ const files = [
 class AnalysisPage extends React.Component {
   constructor(props) {
     super(props);
+       
+    this.state = {
+      selectedFile: null,
+    }
 
     this.fileInputRef = React.createRef();
     this.initialState = {
@@ -344,7 +348,6 @@ class AnalysisPage extends React.Component {
       ...this.initialState
     };
   }
-
   componentDidMount() {
     // getDocumentList()
     //   .then(response => {
@@ -370,11 +373,18 @@ class AnalysisPage extends React.Component {
   };
 
   onFilesAdded = e => {
-    const file = e.target.files[0];
+    this.setState({
+      selectedFile: e.target.files[0],
+      loaded: 0,
+    })
 
-    if (file) {
-      const fileName = file.name;
+    console.log(e.target.files[0]);
+
+    if (files) {
+      const fileName = files.name;
       let errorMsg = "";
+
+      console.log(e.target.files[0]);
 
       if (fileName) {
         const arr = fileName.split(".");
@@ -387,7 +397,7 @@ class AnalysisPage extends React.Component {
         if (!!isSupportedExtention) {
           errorMsg = "";
           this.setState({
-            file: file,
+            file: files,
             disableAnalysisCTA: false,
             errorMsg: errorMsg
           });
@@ -403,14 +413,11 @@ class AnalysisPage extends React.Component {
   };
 
   submitFormData = () => {
-    const {file } = this.state;
+    
+    const data = new FormData() 
+    data.append('file', this.state.selectedFile)
  
-    // let formData = {};
-    // formData = { file: file };
- 
-   // console.log(this.state, "form data", formData);
- 
-    let payload = { document : file }
+    let payload = { document : files }
      
      console.log(payload);
 
@@ -493,8 +500,8 @@ class AnalysisPage extends React.Component {
               <button onClick={this.openFileDialog} className="upload-btn">
                 <input
                   type="file"
-                  className="file-input"
                   ref={this.fileInputRef}
+                  className="file-input"
                   onChange={this.onFilesAdded}
                   accept="application/.doc,.docx"
                 />
