@@ -9,8 +9,10 @@ import {
   getDocumentList
 } from "./ApiService";
 
+import { allowedExtensions, documentAnalysis, files } from './constants'
+
 import BGImage from "./775.jpeg";
-import Logo from "./logo.png";
+import Logo from "./logo.gif";
 
 import StartOver from "./StartOver";
 
@@ -238,113 +240,25 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const allowedExtensions = ["doc", "docx"];
-
-const documentAnalysis = [
-  {
-    id: 1,
-    document: "draft.doc",
-    score: 9
-  },
-  {
-    id: 2,
-    document: "sample-draft.doc",
-    score: 5
-  },
-  {
-    id: 3,
-    document: "draft-for lease agreement in delhi.doc",
-    score: 4
-  },
-  {
-    id: 4,
-    document: "land assignment.doc",
-    score: 8
-  },
-  {
-    id: 5,
-    document: "Rera settlement.doc",
-    score: 6.5
-  },
-  {
-    id: 6,
-    document: "MOV.doc",
-    score: 1
-  },
-  {
-    id: 7,
-    document: "rent agreement.doc",
-    score: 3
-  },
-  {
-    id: 8,
-    document: "funding for LIC.doc",
-    score: 9.5
-  },
-  {
-    id: 9,
-    document: "patanjali-export-import.doc",
-    score: 2
-  }
-];
-
-const files = [
-  {
-    id: 1,
-    document: "draft.doc"
-  },
-  {
-    id: 2,
-    document: "sample-draft.doc"
-  },
-  {
-    id: 3,
-    document: "draft-for lease agreement in delhi.doc"
-  },
-  {
-    id: 4,
-    document: "land assignment.doc"
-  },
-  {
-    id: 5,
-    document: "Rera settlement.doc"
-  },
-  {
-    id: 6,
-    document: "MOV.doc"
-  },
-  {
-    id: 7,
-    document: "rent agreement.doc"
-  },
-  {
-    id: 8,
-    document: "funding for LIC.doc"
-  },
-  {
-    id: 9,
-    document: "patanjali-export-import.doc"
-  }
-];
 
 class AnalysisPage extends React.Component {
   constructor(props) {
     super(props);
-
+       
     this.fileInputRef = React.createRef();
     this.initialState = {
       file: {},
       errorMsg: "",
       disableAnalysisCTA: true,
       showModal: false,
-      step: 1
+      step: 1,
+      selectedFile: null,
     };
 
     this.state = {
       ...this.initialState
     };
   }
-
   componentDidMount() {
     // getDocumentList()
     //   .then(response => {
@@ -370,24 +284,30 @@ class AnalysisPage extends React.Component {
   };
 
   onFilesAdded = e => {
-    const file = e.target.files[0];
+    const selectedFile = e.target.files[0];
+    this.setState({
+      selectedFile,
+      loaded: 0,
+    })
 
-    if (file) {
-      const fileName = file.name;
+    if (files) {
+      const fileName = selectedFile.name;
       let errorMsg = "";
-
       if (fileName) {
         const arr = fileName.split(".");
-
         const docType = arr[arr.length - 1];
+
+
         const isSupportedExtention = allowedExtensions.find(
           ext => ext === docType
         );
 
+
+
         if (!!isSupportedExtention) {
           errorMsg = "";
           this.setState({
-            file: file,
+            file: files,
             disableAnalysisCTA: false,
             errorMsg: errorMsg
           });
@@ -398,46 +318,27 @@ class AnalysisPage extends React.Component {
             errorMsg: errorMsg
           });
         }
+
       }
     }
   };
 
   submitFormData = () => {
-    const {file } = this.state;
- 
-    // let formData = {};
-    // formData = { file: file };
- 
-   // console.log(this.state, "form data", formData);
- 
-    let payload = { document : file }
-     
-     console.log(payload);
-
-    addNewDocument(payload.document)
+    const { selectedFile } = this.state
+    const data = new FormData()
+    data.append('file', selectedFile)
+    console.log(selectedFile)
+    addNewDocument(data)
       .then(response => {
-        console.log("",response);
+        console.log(response);
         this.setState({ showModal: true });
       })
       .catch(err => {
         console.log(err);
       });
-      
-    //API call to submit form data 
+    //API call to submit form data
   };
 
-  // submitFormData = () => {
-  //   const { inputValue, file } = this.state;
-
-  //   let formData = {};
-  //   formData = { doc_file: file, description: inputValue };
-
-  //   console.log(this.state, "form data", formData);
-
-  //   this.setState({ showModal: true });
-
-  //   //API call to submit form data
-  // };
 
   closeModal = () => this.setState({ showModal: false });
 
@@ -473,14 +374,13 @@ class AnalysisPage extends React.Component {
   }
 
   renderStepOneAnalysis() {
-    const { file, disableAnalysisCTA, errorMsg } = this.state;
-    console.log(file.name, "render", this.state);
+    const { selectedFile, disableAnalysisCTA, errorMsg } = this.state;
 
     return (
       <Container>
         <Header bgImage={BGImage}>
           <span>
-            <img src={Logo} alt="" />
+            <img src={Logo} alt="" height ="200" width ="200"/>
             <span className="container-title">
               <div>DMI</div>
               <div>Driving Mobile Innovations</div>
@@ -493,8 +393,8 @@ class AnalysisPage extends React.Component {
               <button onClick={this.openFileDialog} className="upload-btn">
                 <input
                   type="file"
-                  className="file-input"
                   ref={this.fileInputRef}
+                  className="file-input"
                   onChange={this.onFilesAdded}
                   accept="application/.doc,.docx"
                 />
@@ -519,10 +419,10 @@ class AnalysisPage extends React.Component {
                     <div className="failure-icon" />
                     <div className="error-msg">{errorMsg}</div>
                   </React.Fragment>
-                ) : file.name ? (
+                ) : selectedFile && selectedFile.name ? (
                   <React.Fragment>
                     <div className="success-icon" />
-                    <div className="file-name">{file.name}</div>
+                    <div className="file-name">{selectedFile.name}</div>
                   </React.Fragment>
                 ) : (
                   ""

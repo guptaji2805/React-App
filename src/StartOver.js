@@ -3,7 +3,7 @@ import styled from "styled-components";
 import "antd/dist/antd.css";
 
 import BGImage from "./775.jpeg";
-import Logo from "./logo.png";
+import Logo from "./logo.gif";
 
 const Container = styled.div`
   background: #e8e8e8;
@@ -243,7 +243,7 @@ class StartOver extends React.Component {
       <Container>
         <Header bgImage={BGImage}>
           <span>
-            <img src={Logo} alt="" />
+            <img src={Logo} alt="" height ="200" width ="200"/>
             <span className="container-title">
               <div>DMI</div>
               <div>Driving Mobile Innovations</div>
