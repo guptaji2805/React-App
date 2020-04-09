@@ -245,6 +245,13 @@ class AnalysisPage extends React.Component {
   constructor(props) {
     super(props);
        
+<<<<<<< HEAD
+=======
+    this.state = {
+      selectedFile: null,
+    }
+
+>>>>>>> 43a32e762f6a130f8b302b932ad19c95e6f97e52
     this.fileInputRef = React.createRef();
     this.initialState = {
       file: {},
@@ -284,6 +291,7 @@ class AnalysisPage extends React.Component {
   };
 
   onFilesAdded = e => {
+<<<<<<< HEAD
     const selectedFile = e.target.files[0];
     this.setState({
       selectedFile,
@@ -293,6 +301,21 @@ class AnalysisPage extends React.Component {
     if (files) {
       const fileName = selectedFile.name;
       let errorMsg = "";
+=======
+    this.setState({
+      selectedFile: e.target.files[0],
+      loaded: 0,
+    })
+
+    console.log(e.target.files[0]);
+
+    if (files) {
+      const fileName = files.name;
+      let errorMsg = "";
+
+      console.log(e.target.files[0]);
+
+>>>>>>> 43a32e762f6a130f8b302b932ad19c95e6f97e52
       if (fileName) {
         const arr = fileName.split(".");
         const docType = arr[arr.length - 1];
@@ -324,11 +347,23 @@ class AnalysisPage extends React.Component {
   };
 
   submitFormData = () => {
+<<<<<<< HEAD
     const { selectedFile } = this.state
     const data = new FormData()
     data.append('file', selectedFile)
     console.log(selectedFile)
     addNewDocument(data)
+=======
+    
+    const data = new FormData() 
+    data.append('file', this.state.selectedFile)
+ 
+    let payload = { document : files }
+     
+     console.log(payload);
+
+    addNewDocument(payload.document)
+>>>>>>> 43a32e762f6a130f8b302b932ad19c95e6f97e52
       .then(response => {
         console.log(response);
         this.setState({ showModal: true });
