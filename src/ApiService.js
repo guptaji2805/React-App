@@ -16,5 +16,5 @@ import {
       "X-CSRFToken": getCsrfToken()
     });
   
-  export const getDocumentList = () => makeGetRequest("");
+  export const getDocumentList = () => makeGetRequest('');
   

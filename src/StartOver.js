@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import "antd/dist/antd.css";
+import {getDocumentList} from "./ApiService";
 
 import BGImage from "./775.jpeg";
 import Logo from "./logo.gif";
@@ -224,6 +225,19 @@ class StartOver extends React.Component {
     selectedFile: {}
   };
 
+  componentDidMount() {
+
+    fetch('')
+    getDocumentList()
+      .then(response => {
+        console.log(response);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
+
+
   setSelectedFile = file => {
     this.setState({ selectedFile: file, disableCTA: false });
   };
@@ -234,6 +248,17 @@ class StartOver extends React.Component {
     console.log(selectedFile);
     window.open(documentToDownload, "target_blank");
   };
+
+  componentDidMount() {
+    fetch('')
+    getDocumentList()
+      .then(response => {
+        console.log(response);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 
   render() {
     const { disableCTA, selectedFile } = this.state;
@@ -272,7 +297,7 @@ class StartOver extends React.Component {
               <div className="files-wrapper">
                 {files.map(file => {
                   const className = `file-card ${
-                    selectedFile.id === file.id ? "selected-file-card" : ""
+                    selectedFile.id === file.id ? "selected-file-card" : "data"
                   }`;
                   const isSelected = selectedFile.id === file.id;
 

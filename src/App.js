@@ -6,13 +6,12 @@ import "antd/dist/antd.css";
 import {
   addNewDocument,
   updateDocumentList,
-  getDocumentList
 } from "./ApiService";
 
 import { allowedExtensions, documentAnalysis, files } from './constants'
 
 import BGImage from "./775.jpeg";
-import Logo from "./logo.gif";
+import Logo from "./logo.png";
 
 import StartOver from "./StartOver";
 
@@ -245,13 +244,6 @@ class AnalysisPage extends React.Component {
   constructor(props) {
     super(props);
        
-<<<<<<< HEAD
-=======
-    this.state = {
-      selectedFile: null,
-    }
-
->>>>>>> 43a32e762f6a130f8b302b932ad19c95e6f97e52
     this.fileInputRef = React.createRef();
     this.initialState = {
       file: {},
@@ -266,15 +258,7 @@ class AnalysisPage extends React.Component {
       ...this.initialState
     };
   }
-  componentDidMount() {
-    // getDocumentList()
-    //   .then(response => {
-    //     console.log(response);
-    //   })
-    //   .catch(err => {
-    //     console.log(err);
-    //   });
-  }
+  
 
   moveToNextStep = () => {
     const { step } = this.state;
@@ -291,7 +275,6 @@ class AnalysisPage extends React.Component {
   };
 
   onFilesAdded = e => {
-<<<<<<< HEAD
     const selectedFile = e.target.files[0];
     this.setState({
       selectedFile,
@@ -301,21 +284,6 @@ class AnalysisPage extends React.Component {
     if (files) {
       const fileName = selectedFile.name;
       let errorMsg = "";
-=======
-    this.setState({
-      selectedFile: e.target.files[0],
-      loaded: 0,
-    })
-
-    console.log(e.target.files[0]);
-
-    if (files) {
-      const fileName = files.name;
-      let errorMsg = "";
-
-      console.log(e.target.files[0]);
-
->>>>>>> 43a32e762f6a130f8b302b932ad19c95e6f97e52
       if (fileName) {
         const arr = fileName.split(".");
         const docType = arr[arr.length - 1];
@@ -347,23 +315,11 @@ class AnalysisPage extends React.Component {
   };
 
   submitFormData = () => {
-<<<<<<< HEAD
     const { selectedFile } = this.state
     const data = new FormData()
     data.append('file', selectedFile)
     console.log(selectedFile)
     addNewDocument(data)
-=======
-    
-    const data = new FormData() 
-    data.append('file', this.state.selectedFile)
- 
-    let payload = { document : files }
-     
-     console.log(payload);
-
-    addNewDocument(payload.document)
->>>>>>> 43a32e762f6a130f8b302b932ad19c95e6f97e52
       .then(response => {
         console.log(response);
         this.setState({ showModal: true });
@@ -373,7 +329,6 @@ class AnalysisPage extends React.Component {
       });
     //API call to submit form data
   };
-
 
   closeModal = () => this.setState({ showModal: false });
 
@@ -415,7 +370,7 @@ class AnalysisPage extends React.Component {
       <Container>
         <Header bgImage={BGImage}>
           <span>
-            <img src={Logo} alt="" height ="200" width ="200"/>
+            <img src={Logo} alt="" />
             <span className="container-title">
               <div>DMI</div>
               <div>Driving Mobile Innovations</div>
